@@ -15,32 +15,34 @@ document.addEventListener('DOMContentLoaded', function() {
       language: document.getElementById('language').value
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbyzr2py_HukskQBakfofgFPAIXZ4RzSuT4QcnPuJdWyh6lwMgf1Y-N9GZA9T-R_Wzsh/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbxKCcg0HxK6UBlgiE-HKhzOWhMTxdQrEG3hVZuuTTGUIJSwrsZ6saWCb_7AQmibSE19/exec', {
       method: 'POST',
+      mode: 'no-cors', // This mode is for handling CORS policy
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // 'Accept': 'application/json' // You can uncomment this if your server sends back JSON
       },
       body: JSON.stringify(formData)
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
+      if (!response.ok && response.type !== 'opaque') {
+        // 'opaque' responses occur when 'no-cors' is used, meaning the response is there, but cannot be inspected
+        throw new Error('Network response was not ok');
       }
-      return response.json();
+      return response.json(); // This will fail for 'opaque' responses, as they cannot be read
     })
     .then(data => {
       console.log(data);
-      // Handle success
       alert('Data submitted successfully');
-      form.reset(); // Reset the form only after successful submission
+      form.reset();
     })
     .catch(error => {
       console.error('Error:', error);
       alert('Failed to submit data: ' + error.message);
-      // Handle errors here
     });
   });
 });
+
 
 
 
