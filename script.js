@@ -15,26 +15,24 @@ document.addEventListener('DOMContentLoaded', function() {
       language: document.getElementById('language').value
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbxKCcg0HxK6UBlgiE-HKhzOWhMTxdQrEG3hVZuuTTGUIJSwrsZ6saWCb_7AQmibSE19/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbxKCcg0HxK6UBlgiE-HKhzOWhMTxdQrEG3hVZuuTTGUIJSwrsZ6saWCb_7AQmibSE19/exec', { // Replace with your actual script ID
       method: 'POST',
-      mode: 'no-cors', // This mode is for handling CORS policy
+      mode: 'no-cors', // no-cors means we can't read the response from the server
       headers: {
-        'Content-Type': 'application/json',
-        // 'Accept': 'application/json' // You can uncomment this if your server sends back JSON
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(formData)
     })
     .then(response => {
-      if (!response.ok && response.type !== 'opaque') {
-        // 'opaque' responses occur when 'no-cors' is used, meaning the response is there, but cannot be inspected
+      // Check if the response type is 'opaque', which occurs with 'no-cors'
+      if (response.type === 'opaque' || response.ok) {
+        // If 'opaque' or response is OK, assume success
+        alert('Data submitted successfully');
+        form.reset(); // Reset the form on assumed success
+      } else {
+        // If the response is not 'opaque' and is not OK, throw an error
         throw new Error('Network response was not ok');
       }
-      return response.json(); // This will fail for 'opaque' responses, as they cannot be read
-    })
-    .then(data => {
-      console.log(data);
-      alert('Data submitted successfully');
-      form.reset();
     })
     .catch(error => {
       console.error('Error:', error);
@@ -42,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+
+
 
 
 
