@@ -1,0 +1,133 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0 10%; /* Adds padding on the sides */
+    background-color: #f4f4f4;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #5C6BC0;
+}
+
+main {
+    margin: 20px 0;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Form element styles */
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust the space between form elements */
+}
+
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+    width: 100%; /* Full width */
+    padding: 10px;
+    margin-bottom: 10px; /* Space below inputs */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 40px; /* Set a fixed height for inputs and select */
+}
+
+textarea {
+    height: 100px; /* Set a fixed height for the textarea */
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5C6BC0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 40px; /* Set a fixed height for buttons */
+    margin-top: 10px; /* Space above the button */
+}
+
+button:hover {
+    background-color: #3F51B5;
+}
+
+/* Additional styles for aesthetics */
+ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+li {
+    display: inline;
+    margin-right: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #5C6BC0;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    color: #333;
+}
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 600px) {
+    body {
+        padding: 0 5%; /* Smaller side padding for mobile devices */
+    }
+
+    form {
+        width: 90%; /* Allows the form to be more responsive on mobile */
+        margin: 10px auto; /* Less vertical space on mobile */
+        padding: 15px; /* Smaller padding on mobile */
+        gap: 15px; /* Smaller gaps for a tighter layout on mobile */
+    }
+
+    /* Ensuring inputs and buttons stretch appropriately */
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select,
+    button {
+        width: 100%; /* Full width for mobile */
+    }
+}
+
+
+
+

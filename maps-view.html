@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Map - NoorNetwork Community Database</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <!-- Add your navigation and header content here -->
+    </header>
+    
+    <main>
+        <h2>Community Map</h2>
+        <div id="map" style="height: 400px;"></div> <!-- The map will be inserted here -->
+        
+        <label for="languageFilter">Filter by Language Spoken:</label>
+        <select id="languageFilter">
+            <option value="all">All</option>
+            <!-- Add options for each language here -->
+            <option value="none">None</option>
+        </select>
+        
+        <!-- Additional filter elements can be added here -->
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 ANY Enterprises. Developed by Noorullah Khan. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5qd8zAVGpp_wwAfLnpfjQA5VdlOqjJc4&callback=initMap" async defer></script>
+
+    <script>
+        function initMap() {
+            // Map options
+            var options = {
+                zoom: 8,
+                center: { lat: -33.8688, lng: 151.2093 } // Coordinates of Sydney
+            };
+
+            // New map
+            var map = new google.maps.Map(document.getElementById('map'), options);
+
+            // Fetch data and add markers
+            fetch('https://script.google.com/macros/s/AKfycbyzr2py_HukskQBakfofgFPAIXZ4RzSuT4QcnPuJdWyh6lwMgf1Y-N9GZA9T-R_Wzsh/exec')
+            .then(response => response.json())
+            .then(data => {
+                // Loop through each data point and place a marker
+                data.forEach(function(location) {
+                    var marker = new google.maps.Marker({
+                        position: { lat: location.lat, lng: location.lng },
+                        map: map,
+                        title: location.name
+                    });
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
