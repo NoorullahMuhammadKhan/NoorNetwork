@@ -42,37 +42,41 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  var updateVisitsForm = document.getElementById('updateVisitsForm');
+  var updateVisitForm = document.getElementById('updateVisitForm');
 
-  updateVisitsForm.addEventListener('submit', function(e) {
+  updateVisitForm.addEventListener('submit', function(e) {
     e.preventDefault();
 
     var formData = {
-      action: 'updateVisits', // This will tell the doPost which action to perform
+      action: 'updateVisits', // This will tell doPost what action to take
       addressID: document.getElementById('addressID').value,
+      visitDate: document.getElementById('visitDate').value,
       visitNotes: document.getElementById('visitNotes').value,
       inactiveFlag: document.getElementById('inactiveFlag').checked // true or false
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbxKCcg0HxK6UBlgiE-HKhzOWhMTxdQrEG3hVZuuTTGUIJSwrsZ6saWCb_7AQmibSE19/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbxKCcg0HxK6UBlgiE-HKhzOWhMTxdQrEG3hVZuuTTGUIJSwrsZ6saWCb_7AQmibSE19/exec', { // Replace with your actual script ID
       method: 'POST',
-      mode: 'no-cors',
+      mode: 'no-cors', // no-cors means we won't be able to read the response
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(formData)
     })
     .then(response => {
-      // We won't get a readable response due to 'no-cors'
-      alert('Visit updated successfully');
-      updateVisitsForm.reset();
+      if (response.ok) {
+        console.log('Visit updated successfully');
+        updateVisitForm.reset();
+      } else {
+        throw new Error('Network response was not ok.');
+      }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('Failed to update visit: ' + error.message);
     });
   });
 });
+
 
 
 
