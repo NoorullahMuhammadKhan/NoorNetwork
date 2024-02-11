@@ -41,6 +41,40 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  var updateVisitsForm = document.getElementById('updateVisitsForm');
+
+  updateVisitsForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var formData = {
+      action: 'updateVisits', // This will tell the doPost which action to perform
+      addressID: document.getElementById('addressID').value,
+      visitNotes: document.getElementById('visitNotes').value,
+      inactiveFlag: document.getElementById('inactiveFlag').checked // true or false
+    };
+
+    fetch('https://script.google.com/macros/s/AKfycbxKCcg0HxK6UBlgiE-HKhzOWhMTxdQrEG3hVZuuTTGUIJSwrsZ6saWCb_7AQmibSE19/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      // We won't get a readable response due to 'no-cors'
+      alert('Visit updated successfully');
+      updateVisitsForm.reset();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to update visit: ' + error.message);
+    });
+  });
+});
+
+
 
 
 
