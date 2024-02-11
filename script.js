@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     e.preventDefault();
 
     var formData = {
+      action: 'addMember',
       streetAddress: document.getElementById('streetAddress').value,
       suburb: document.getElementById('suburb').value,
       state: document.getElementById('state').value,
