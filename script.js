@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     e.preventDefault();
 
     var formData = {
-      action: 'updateVisits', // This will tell doPost what action to take
+      action: 'updateVisits',
       addressID: document.getElementById('addressID').value,
       visitDate: document.getElementById('visitDate').value,
       visitNotes: document.getElementById('visitNotes').value,
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
 
 
 

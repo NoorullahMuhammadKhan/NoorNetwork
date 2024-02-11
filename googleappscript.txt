@@ -1,0 +1,171 @@
+function incrementAddressID() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Main');
+  var data = sheet.getDataRange().getValues();
+  var nextID = data.length;
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === '') {
+      sheet.getRange(i + 1, 1).setValue(nextID);
+      nextID++;
+    }
+  }
+}
+
+function updateLatestVisitAndNotes() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var mainSheet = ss.getSheetByName('Main');
+  var visitsSheet = ss.getSheetByName('Visits');
+  var mainData = mainSheet.getDataRange().getValues();
+  var visitData = visitsSheet.getDataRange().getValues();
+
+  var visitMap = new Map();
+  visitData.forEach(function(row) {
+    var addressID = row[0];
+    var visitDate = row[1];
+    var current = visitMap.get(addressID);
+    if (!current || visitDate > current[1]) {
+      visitMap.set(addressID, row);
+    }
+  });
+
+  mainData.forEach(function(row, index) {
+    if (index === 0) return; // Skip header row
+    var addressID = row[0];
+    var latestVisit = visitMap.get(addressID);
+    if (latestVisit) {
+      mainSheet.getRange(index + 1, 6).setValue(latestVisit[1]); // Assuming LastVisited is now column F
+      mainSheet.getRange(index + 1, 7).setValue(latestVisit[2]); // Assuming LatestNotes is now column G
+      // Update LanguageSpoken if it's included in the 'Visits' sheet data
+      // mainSheet.getRange(index + 1, 5).setValue(latestVisit[3]); // Assuming LanguageSpoken is in the fourth index of latestVisit
+    }
+  });
+}
+
+// Add this function to handle form submissions
+
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30000);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Main');
+    
+    Logger.log(e.postData.contents); // Log the incoming data
+    
+    var data = JSON.parse(e.postData.contents);
+    var nextRow = sheet.getLastRow() + 1;
+
+    sheet.appendRow([
+      nextRow, // Address ID
+      data.streetAddress,
+      data.suburb,
+      data.state,
+      data.postcode,
+      data.country,
+      data.name,
+      data.background,
+      data.language,
+      '', // Last Visited
+      ''  // Latest Notes
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      'result': 'success',
+      'row': nextRow
+    }))
+    .setMimeType(ContentService.MimeType.JSON)
+    
+    /*
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST',
+      'Content-Type': 'application/json'
+    });
+    */
+    
+  } catch (error) {
+    Logger.log(error);
+    return ContentService.createTextOutput(JSON.stringify({
+      'result': 'error',
+      'error': error.toString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+  // Set CORS headers
+  var headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json'
+  };
+
+  // Prepare the JSON output
+  var jsonOutput = ContentService.createTextOutput(JSON.stringify({
+    'result': 'success',
+    'row': nextRow
+  })).setMimeType(ContentService.MimeType.JSON);
+
+  // Add the CORS headers
+  jsonOutput.headers = headers;
+
+  return jsonOutput;
+}
+
+
+// Function to handle updating visits
+function doPostUpdateVisits(e) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30000);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var visitsSheet = ss.getSheetByName('Visits');
+
+    var data = JSON.parse(e.postData.contents);
+    var nextRow = visitsSheet.getLastRow() + 1;
+
+    // Append the data received to the 'Visits' sheet
+    visitsSheet.appendRow([
+      data.addressID,
+      new Date(), // Automatically capture the date of the visit
+      data.visitNotes,
+      data.inactiveFlag
+    ]);
+
+    return ContentService.createTextOutput(JSON.stringify({
+      'result': 'success',
+      'row': nextRow
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    Logger.log(error);
+    return ContentService.createTextOutput(JSON.stringify({
+      'result': 'error',
+      'error': error.toString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Keep the original doPost function to handle adding new members
+// Make sure to check the action type and call the appropriate function
+function doPost(e) {
+  var actionType = JSON.parse(e.postData.contents).action;
+  if (actionType === 'updateVisits') {
+    return doPostUpdateVisits(e);
+  } else {
+    // Handle other actions or throw an error if actionType is not recognized
+    throw new Error('Invalid action type');
+  }
+}
+
+
+
+
+
+
+
+
