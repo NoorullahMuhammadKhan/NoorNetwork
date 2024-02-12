@@ -78,6 +78,26 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+<script>
+    document.getElementById('updateVisitsButton').addEventListener('click', function() {
+        fetch('https://script.google.com/macros/s/AKfycbyTBrRqtL-ZZdCIksKrxYSQ9kUuZ-PKPfqDt0ZbUElUv-yNXNNmek3F95fntIPAVGqw/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'updateLatestVisitAndNotes' })
+        })
+        .then(response => {
+            console.log('Visits updated');
+            // You might want to give visual feedback or reload the map here.
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
 
 
 
