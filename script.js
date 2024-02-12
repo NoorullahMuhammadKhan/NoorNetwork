@@ -42,24 +42,38 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  var updateVisitForm = document.getElementById('updateVisitForm');
 
+  updateVisitForm.addEventListener('submit', function(e) {
+    e.preventDefault();
 
+    var formData = {
+      action: 'updateVisits',
+      addressID: document.getElementById('addressID').value,
+      visitDate: document.getElementById('visitDate').value,
+      visitNotes: document.getElementById('visitNotes').value,
+      inactiveFlag: document.getElementById('inactiveFlag').checked // true or false
+    };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+    fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec', { // Replace with your actual script ID
+      method: 'POST',
+      mode: 'no-cors', // no-cors means we won't be able to read the response
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Visit updated successfully');
+        updateVisitForm.reset();
+      } else {
+        throw new Error('Network response was not ok.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+});
