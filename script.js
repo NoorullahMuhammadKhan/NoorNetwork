@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+
 document.addEventListener('DOMContentLoaded', function() {
   var updateVisitForm = document.getElementById('updateVisitForm');
 
@@ -65,15 +66,16 @@ document.addEventListener('DOMContentLoaded', function() {
       body: JSON.stringify(formData)
     })
     .then(response => {
-      if (response.ok) {
-        console.log('Visit updated successfully');
-        updateVisitForm.reset();
+      if (response.ok || response.type === 'opaque') { // Check if the response is ok or 'opaque'
+        alert('Visit updated successfully'); // Provide user feedback
+        updateVisitForm.reset(); // Reset the form after successful submission
       } else {
         throw new Error('Network response was not ok.');
       }
     })
     .catch(error => {
       console.error('Error:', error);
+      alert('Failed to submit visit: ' + error.message); // Provide error feedback
     });
   });
 });
