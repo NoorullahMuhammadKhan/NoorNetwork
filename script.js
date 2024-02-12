@@ -79,3 +79,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+function geocodeAddresses() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Main'); // Name of the sheet where the addresses are stored
+  var dataRange = sheet.getDataRange(); // Get the range of the data
+  var values = dataRange.getValues(); // Get the data as a 2D array
+
+  for (var i = 1; i < values.length; i++) { // Start at 1 to skip the header row
+    var row = values[i];
+    var address = row[1] + ', ' + row[2] + ', ' + row[3] + ', ' + row[4]; // Concatenate the address components
+    var geocodeResult = Maps.newGeocoder().geocode(address); // Use the Maps service to geocode the address
+    if (geocodeResult.status == 'OK') {
+      var latLng = geocodeResult.results[0].geometry.location;
+      sheet.getRange(i + 1, 9).setValue(latLng.lat); // Store latitude
+      sheet.getRange(i + 1, 10).setValue(latLng.lng); // Store longitude
+    } else {
+      Logger.log('Geocode failed for address: ' + address);
+    }
+  }
+  SpreadsheetApp.flush(); // Apply the changes to the spreadsheet
+}
