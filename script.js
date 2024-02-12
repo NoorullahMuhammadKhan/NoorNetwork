@@ -42,61 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  var updateVisitForm = document.getElementById('updateVisitForm');
-
-  updateVisitForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    var formData = {
-      action: 'updateVisits',
-      addressID: document.getElementById('addressID').value,
-      visitDate: document.getElementById('visitDate').value,
-      visitNotes: document.getElementById('visitNotes').value,
-      inactiveFlag: document.getElementById('inactiveFlag').checked // true or false
-    };
-
-    fetch('https://script.google.com/macros/s/AKfycbyTBrRqtL-ZZdCIksKrxYSQ9kUuZ-PKPfqDt0ZbUElUv-yNXNNmek3F95fntIPAVGqw/exec', { // Replace with your actual script ID
-      method: 'POST',
-      mode: 'no-cors', // no-cors means we won't be able to read the response
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log('Visit updated successfully');
-        updateVisitForm.reset();
-      } else {
-        throw new Error('Network response was not ok.');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  });
-});
-
-<script>
-    document.getElementById('updateVisitsButton').addEventListener('click', function() {
-        fetch('https://script.google.com/macros/s/AKfycbyTBrRqtL-ZZdCIksKrxYSQ9kUuZ-PKPfqDt0ZbUElUv-yNXNNmek3F95fntIPAVGqw/exec', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ action: 'updateLatestVisitAndNotes' })
-        })
-        .then(response => {
-            console.log('Visits updated');
-            // You might want to give visual feedback or reload the map here.
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    });
-</script>
 
 
 
