@@ -199,3 +199,12 @@ function createOutput(result, data) {
   return ContentService.createTextOutput(JSON.stringify(output))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+
+
+
+
+
+
+
+
