@@ -40,23 +40,32 @@ function updateLatestVisitAndNotes() {
   });
 }
 
-// Add this function to handle form submissions
-
-
 function doPost(e) {
+  var jsonData = JSON.parse(e.postData.contents);
+  var action = jsonData.action;
+  
+  Logger.log('Action received: ' + action); // This will log the action to the script's logs
+  
+  if (action === 'addMember') {
+    return doPostAddMember(jsonData);
+  } else if (action === 'updateVisits') {
+    return doPostUpdateVisits(jsonData);
+  } else {
+    throw new Error('Invalid action type: ' + action);
+  }
+}
+
+function doPostAddMember(data) {
   var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  
   try {
-    lock.waitLock(30000);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName('Main');
-    
-    Logger.log(e.postData.contents); // Log the incoming data
-    
-    var data = JSON.parse(e.postData.contents);
     var nextRow = sheet.getLastRow() + 1;
-
+    
     sheet.appendRow([
-      nextRow, // Address ID
+      nextRow,
       data.streetAddress,
       data.suburb,
       data.state,
@@ -65,106 +74,51 @@ function doPost(e) {
       data.name,
       data.background,
       data.language,
-      '', // Last Visited
-      ''  // Latest Notes
+      '',
+      ''
     ]);
     
-    return ContentService.createTextOutput(JSON.stringify({
-      'result': 'success',
-      'row': nextRow
-    }))
-    .setMimeType(ContentService.MimeType.JSON)
-    
-    /*
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST',
-      'Content-Type': 'application/json'
-    });
-    */
-    
+    return createOutput('success', nextRow);
   } catch (error) {
-    Logger.log(error);
-    return ContentService.createTextOutput(JSON.stringify({
-      'result': 'error',
-      'error': error.toString()
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
+    return createOutput('error', error.toString());
   } finally {
     lock.releaseLock();
   }
-  // Set CORS headers
-  var headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json'
-  };
-
-  // Prepare the JSON output
-  var jsonOutput = ContentService.createTextOutput(JSON.stringify({
-    'result': 'success',
-    'row': nextRow
-  })).setMimeType(ContentService.MimeType.JSON);
-
-  // Add the CORS headers
-  jsonOutput.headers = headers;
-
-  return jsonOutput;
 }
 
-
-// Function to handle updating visits
-function doPostUpdateVisits(e) {
+function doPostUpdateVisits(data) {
   var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  
   try {
-    lock.waitLock(30000);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var visitsSheet = ss.getSheetByName('Visits');
-
-    var data = JSON.parse(e.postData.contents);
     var nextRow = visitsSheet.getLastRow() + 1;
-
-    // Append the data received to the 'Visits' sheet
+    
     visitsSheet.appendRow([
       data.addressID,
-      new Date(), // Automatically capture the date of the visit
+      data.visitDate,
       data.visitNotes,
-      data.inactiveFlag
+      data.inactiveFlag ? 'Yes' : 'No'
     ]);
-
-    return ContentService.createTextOutput(JSON.stringify({
-      'result': 'success',
-      'row': nextRow
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
+    
+    return createOutput('success', nextRow);
   } catch (error) {
-    Logger.log(error);
-    return ContentService.createTextOutput(JSON.stringify({
-      'result': 'error',
-      'error': error.toString()
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
+    return createOutput('error', error.toString());
   } finally {
     lock.releaseLock();
   }
 }
 
-// Keep the original doPost function to handle adding new members
-// Make sure to check the action type and call the appropriate function
-function doPost(e) {
-  var actionType = JSON.parse(e.postData.contents).action;
-  if (actionType === 'updateVisits') {
-    return doPostUpdateVisits(e);
-  } else {
-    // Handle other actions or throw an error if actionType is not recognized
-    throw new Error('Invalid action type');
-  }
+function createOutput(result, data) {
+  var output = {
+    'result': result,
+    'data': data
+  };
+  
+  return ContentService.createTextOutput(JSON.stringify(output))
+    .setMimeType(ContentService.MimeType.JSON);
 }
-
-
-
-
 
 
 
