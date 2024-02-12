@@ -36,7 +36,7 @@
     </main>
     
     <footer>
-        <p>&copy; 2024 ANY Enterprises. Developed by Noorullah Khan. All rights reserved. Testing GitHub Update</p>
+        <p>&copy; 2024 ANY Enterprises. Developed by Noorullah Khan. All rights reserved. Checking</p>
     </footer>
     
     <!-- Google Maps API script with callback to initMap function -->
@@ -50,44 +50,38 @@
             });
 
             // Fetch data to add markers
-            fetch('https://script.google.com/macros/s/AKfycbwYpSuYr6MaLeTYwB_xvgU6kc-83x5NOUdYrBTcBX1fj9JCREEB-J3j-e5HmZ30m4ug/exec')
+            fetch('https://script.google.com/macros/s/AKfycbylG4xsd_F0Ir1_7gA5GAwLdscmCXoS56xi7_IwwK2fkKKaJ2wVDBSI70vNkCEYS4I2/exec')
             .then(response => response.json())
             .then(data => {
                 data.forEach(item => {
                     var marker = new google.maps.Marker({
-                        position: { lat: item.latitude, lng: item.longitude },
-                        map: map,
-                        title: item.name
-                    });
-
-                    // Optional: Add an info window
-                    var infowindow = new google.maps.InfoWindow({
-                        content: 'Name: ' + item.name + '<br>Last Visited: ' + item.lastVisited
-                    });
-
-                    marker.addListener('click', function() {
-                        infowindow.open(map, marker);
-                    });
+                    position: { lat: item.latitude, lng: item.longitude },
+                    map: map,
+                    title: item.name
                 });
-            })
-            .catch(error => console.error('Error:', error));
 
-            // Update Visits button functionality
-            document.getElementById('updateVisitsButton').addEventListener('click', function() {
-                fetch('https://script.google.com/macros/s/AKfycbwYpSuYr6MaLeTYwB_xvgU6kc-83x5NOUdYrBTcBX1fj9JCREEB-J3j-e5HmZ30m4ug/exec', {
-                    method: 'GET'
-                })
-                .then(response => response.text())
-                .then(message => {
-                    alert('Visits updated: ' + message);
-                    // Optional: Refresh the map markers here
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error updating visits: ' + error.message);
+                var contentString = '<div id="content">'+
+                    '<p><b>Address ID:</b> ' + item.addressID + '</p>' +
+                    '<p><b>Name:</b> ' + item.name + '</p>' +
+                    '<p><b>Address:</b> ' + item.address + '</p>' +
+                    '<p><b>Country:</b> ' + item.country + '</p>' +
+                    '<p><b>Language:</b> ' + item.language + '</p>' +
+                    '<p><b>Last Visited:</b> ' + item.lastVisited + '</p>' +
+                    '<p><b>Latest Notes:</b> ' + item.latestNotes + '</p>' +
+                    '<p><a href="' + item.addVisitLink + '">Add Visit</a></p>' +
+                    '</div>';
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
                 });
             });
+            })
+            .catch(error => console.error('Error:', error));
         }
-    </script>
+</script>
 </body>
 </html>
