@@ -26,22 +26,9 @@
         <label for="languageFilter">Filter by Language Spoken:</label>
         <select id="languageFilter">
             <option value="all">All</option>
-            <option value="all">All</option>
-            <option value="urdu">Urdu/Hindi</option>
-            <option value="arabic">Arabic</option>
-            <option value="indonesian">Indonesian/Malay</option>
-            <option value="tamil">Tamil</option>
-            <option value="bengali">Bengali</option>
-            <option value="farsi">Farsi</option>
-            <option value="pashto">Pashto</option>
-            <option value="turkish">Turkish</option>
-            <option value="somali">Somali</option>
-            <option value="french">French</option>
-            <option value="hausa">Hausa</option>
-            <option value="swahili">Swahili</option>
-            <option value="other">Other</option>
+            <!-- Add more options here -->
         </select>
-
+        
         <!-- "Update Visits" button -->
         <button id="updateVisitsButton">Update Visits</button>
         
@@ -52,105 +39,55 @@
         <p>&copy; 2024 ANY Enterprises. Developed by Noorullah Khan. All rights reserved. Testing GitHub Update</p>
     </footer>
     
-    <!-- Google Maps API script -->
+    <!-- Google Maps API script with callback to initMap function -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5qd8zAVGpp_wwAfLnpfjQA5VdlOqjJc4&callback=initMap" async defer></script>
+    
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: { lat: -33.8688, lng: 151.2093 } // Example coordinates
+            });
 
-    
-    
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>View Map - NoorNetwork Community Database</title>
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header>
-            <h1>NoorNetwork</h1>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Main</a></li>
-                    <li><a href="add-data.html">Add Data</a></li>
-                    <li><a href="maps-view.html">View Map</a></li>
-                    <li><a href="add-visits.html" class="active">Add Visit</a></li>
-                </ul>
-            </nav>
-        </header>
-        
-        <main>
-            <h2>Community Map</h2>
-            <div id="map" style="height: 400px;"></div> <!-- The map will be inserted here -->
-            
-            <label for="languageFilter">Filter by Language Spoken:</label>
-            <select id="languageFilter">
-                <option value="all">All</option>
-                <option value="urdu">Urdu/Hindi</option>
-                <option value="arabic">Arabic</option>
-                <!-- Add more options here -->
-            </select>
-            
-            <!-- "Update Visits" button -->
-            <button id="updateVisitsButton">Update Visits</button>
-        </main>
-        
-        <footer>
-            <p>&copy; 2024 ANY Enterprises. All rights reserved.</p>
-        </footer>
-        
-        <!-- Google Maps API script with callback to initMap function -->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5qd8zAVGpp_wwAfLnpfjQA5VdlOqjJc4&callback=initMap" async defer></script>
-        
-        <script>
-            // Function to initialize the map and handle the "Update Visits" button click
-            function initMap() {
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 8,
-                    center: { lat: -33.8688, lng: 151.2093 } // Example coordinates
-                });
-    
-                // Fetch data to add markers
-                fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec')
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(item => {
-                        var marker = new google.maps.Marker({
-                            position: { lat: item.latitude, lng: item.longitude },
-                            map: map,
-                            title: item.name
-                        });
-    
-                        // Optional: Add an info window
-                        var infowindow = new google.maps.InfoWindow({
-                            content: 'Name: ' + item.name + '<br>Last Visited: ' + item.lastVisited
-                        });
-    
-                        marker.addListener('click', function() {
-                            infowindow.open(map, marker);
-                        });
+            // Fetch data to add markers
+            fetch('https://script.google.com/macros/s/AKfycbwYpSuYr6MaLeTYwB_xvgU6kc-83x5NOUdYrBTcBX1fj9JCREEB-J3j-e5HmZ30m4ug/exec')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(item => {
+                    var marker = new google.maps.Marker({
+                        position: { lat: item.latitude, lng: item.longitude },
+                        map: map,
+                        title: item.name
                     });
+
+                    // Optional: Add an info window
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Name: ' + item.name + '<br>Last Visited: ' + item.lastVisited
+                    });
+
+                    marker.addListener('click', function() {
+                        infowindow.open(map, marker);
+                    });
+                });
+            })
+            .catch(error => console.error('Error:', error));
+
+            // Update Visits button functionality
+            document.getElementById('updateVisitsButton').addEventListener('click', function() {
+                fetch('https://script.google.com/macros/s/AKfycbwYpSuYr6MaLeTYwB_xvgU6kc-83x5NOUdYrBTcBX1fj9JCREEB-J3j-e5HmZ30m4ug/exec', {
+                    method: 'GET'
                 })
-                .catch(error => console.error('Error:', error));
-    
-                // Update Visits button functionality
-                document.getElementById('updateVisitsButton').addEventListener('click', function() {
-                    fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec', {
-                        method: 'GET'
-                    })
-                    .then(response => response.text())
-                    .then(message => {
-                        alert('Visits updated: ' + message);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error updating visits: ' + error.message);
-                    });
+                .then(response => response.text())
+                .then(message => {
+                    alert('Visits updated: ' + message);
+                    // Optional: Refresh the map markers here
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating visits: ' + error.message);
                 });
-            }
-        </script>
-    </body>
-    </html>
-    
-
+            });
+        }
+    </script>
 </body>
 </html>
