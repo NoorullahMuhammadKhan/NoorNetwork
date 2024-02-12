@@ -3,58 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Visits - NoorNetwork Community Database</title>
+    <title>View Map - NoorNetwork Community Database</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Include any additional CSS or JS here -->
 </head>
 <body>
     <header>
-        <h1>NoorNetwork</h1>
-        <nav>
-            <ul>
-                <li><a href="add-data.html">Add Data</a></li>
-                <li><a href="view-map.html">View Map</a></li>
-                <li><a href="update-visits.html" class="active">Update Visits</a></li>
-            </ul>
-        </nav>
+        <!-- Add your navigation and header content here -->
     </header>
     
     <main>
-        <section id="updateVisitSection">
-            <h2>Update Visit Details</h2>
-            <form id="updateVisitForm">
-                <!-- Form fields -->
-            </form>
+        <h2>Community Map</h2>
+        <div id="map" style="height: 400px;"></div> <!-- The map will be inserted here -->
+        
+        <label for="languageFilter">Filter by Language Spoken:</label>
+        <select id="languageFilter">
+            <option value="all">All</option>
+            <option value="urdu">Urdu/Hindi</option>
+            <option value="arabic">Arabic</option>
+            <option value="indonesian">Indonesian/Malay</option>
+            <option value="tamil">Tamil</option>
+            <option value="bengali">Bengali</option>
+            <option value="farsi">Farsi</option>
+            <option value="pashto">Pashto</option>
+            <option value="turkish">Turkish</option>
+            <option value="somali">Somali</option>
+            <option value="french">French</option>
+            <option value="hausa">Hausa</option>
+            <option value="swahili">Swahili</option>
+            <option value="other">Other</option>
+        </select>
 
-            <!-- Button to trigger the latest visit and notes update -->
-            <button id="updateVisitsButton">Update Latest Visits and Notes</button>
-        </section>
+        <button id="updateVisitsButton">Update Visits</button>
+
+        
+        <!-- Additional filter elements can be added here -->
     </main>
     
     <footer>
-        <!-- Footer content here -->
+        <p>&copy; 2024 ANY Enterprises. Developed by Noorullah Khan. All rights reserved. Testing GitHub Update</p>
     </footer>
     
-    <script src="script.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5qd8zAVGpp_wwAfLnpfjQA5VdlOqjJc4&callback=initMap" async defer></script>
 
     <script>
-        document.getElementById('updateVisitsButton').addEventListener('click', function() {
-            fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec', {
-                method: 'GET',
+        function initMap() {
+            // Map options
+            var options = {
+                zoom: 8,
+                center: { lat: -33.8688, lng: 151.2093 } // Coordinates of Sydney
+            };
+
+            // New map
+            var map = new google.maps.Map(document.getElementById('map'), options);
+
+            // Fetch data and add markers
+            fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec')
+            .then(response => response.json())
+            .then(data => {
+                // Loop through each data point and place a marker
+                data.forEach(function(location) {
+                    var marker = new google.maps.Marker({
+                        position: { lat: location.lat, lng: location.lng },
+                        map: map,
+                        title: location.name
+                    });
+                });
             })
-            .then(response => response.text()) // Get the text response from GAS
-            .then(message => {
-                console.log(message);
-                alert('Visits updated: ' + message); // Show an alert with the response
-                // You might want to give visual feedback or reload the map here.
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error updating visits: ' + error.message);
-            });
-        });
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html>
 
 
+https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec
