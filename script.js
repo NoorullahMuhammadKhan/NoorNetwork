@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
       language: document.getElementById('language').value
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbyTBrRqtL-ZZdCIksKrxYSQ9kUuZ-PKPfqDt0ZbUElUv-yNXNNmek3F95fntIPAVGqw/exec', { // Replace with your actual script ID
+    fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec', { // Replace with your actual script ID
       method: 'POST',
       mode: 'no-cors', // no-cors means we can't read the response from the server
       headers: {

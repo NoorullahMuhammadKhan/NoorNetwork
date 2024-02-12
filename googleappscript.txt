@@ -14,41 +14,67 @@ function updateLatestVisitAndNotes() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var mainSheet = ss.getSheetByName('Main');
   var visitsSheet = ss.getSheetByName('Visits');
-  var mainData = mainSheet.getDataRange().getValues();
-  var visitData = visitsSheet.getDataRange().getValues();
 
-  var visitMap = new Map();
+  var mainData = mainSheet.getRange(2, 1, mainSheet.getLastRow() - 1, 2).getValues(); // Assuming the AddressID is in column A
+  var visitData = visitsSheet.getRange(2, 1, visitsSheet.getLastRow() - 1, 4).getValues(); // Assuming AddressID, VisitDate, VisitNotes, InactiveFlag are in columns A, B, C, D respectively
+
+  // Create a map to track the latest visit date and notes for each AddressID
+  var latestVisitsMap = new Map();
+
+  // Loop over each row in the visits data
   visitData.forEach(function(row) {
     var addressID = row[0];
-    var visitDate = row[1];
-    var current = visitMap.get(addressID);
-    if (!current || visitDate > current[1]) {
-      visitMap.set(addressID, row);
+    var visitDate = new Date(row[1]);
+    var visitNotes = row[2];
+    var inactiveFlag = row[3];
+    
+    // If this is the first visit for this AddressID or if the visit date is later than the one we have, update the map
+    if (!latestVisitsMap.has(addressID) || visitDate > latestVisitsMap.get(addressID).visitDate) {
+      latestVisitsMap.set(addressID, {visitDate: visitDate, visitNotes: visitNotes, inactiveFlag: inactiveFlag});
     }
   });
 
+  // Loop over each row in the main data
   mainData.forEach(function(row, index) {
-    if (index === 0) return; // Skip header row
     var addressID = row[0];
-    var latestVisit = visitMap.get(addressID);
+    var latestVisit = latestVisitsMap.get(addressID);
+
+    // If we have a latest visit for this AddressID, update the main sheet
     if (latestVisit) {
-      mainSheet.getRange(index + 1, 6).setValue(latestVisit[1]); // Assuming LastVisited is now column F
-      mainSheet.getRange(index + 1, 7).setValue(latestVisit[2]); // Assuming LatestNotes is now column G
-      // Update LanguageSpoken if it's included in the 'Visits' sheet data
-      // mainSheet.getRange(index + 1, 5).setValue(latestVisit[3]); // Assuming LanguageSpoken is in the fourth index of latestVisit
+      // Update the last visited date and notes in the Main sheet
+      mainSheet.getRange(index + 2, 10).setValue(latestVisit.visitDate); // Assuming LastVisited is column J
+      mainSheet.getRange(index + 2, 11).setValue(latestVisit.visitNotes); // Assuming LatestNotes is column K
     }
   });
+
+  // After all changes are made to the spreadsheet and before the function exits:
+  SpreadsheetApp.flush(); // Apply all pending changes to the spreadsheet
 }
 
+// This function will handle GET requests
+function doGet(e) {
+  // Call your function to update the latest visit and notes
+  updateLatestVisitAndNotes();
+  
+  // Return a success message
+  return ContentService.createTextOutput('Latest visits and notes updated.');
+}
+
+// This function will handle POST requests
 function doPost(e) {
   var jsonData = JSON.parse(e.postData.contents);
   var action = jsonData.action;
   
-  Logger.log('Action received: ' + action); // This will log the action to the script's logs
-  
+  if (action === 'updateLatestVisitAndNotes') {
+    // Call your function to update the latest visit and notes
+    updateLatestVisitAndNotes();
+    return createOutput('success', 'Latest visits and notes updated.');
+  }
+
   if (action === 'addMember') {
     return doPostAddMember(jsonData);
   } else if (action === 'updateVisits') {
+    Logger.log('Calling doPostUpdateVisits'); // Additional log to confirm this branch is executed
     return doPostUpdateVisits(jsonData);
   } else {
     throw new Error('Invalid action type: ' + action);
@@ -88,13 +114,12 @@ function doPostAddMember(data) {
 
 function doPostUpdateVisits(data) {
   var lock = LockService.getScriptLock();
-  lock.waitLock(30000);
-  
   try {
+    lock.waitLock(30000); // Lock for concurrency control
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var visitsSheet = ss.getSheetByName('Visits');
-    var nextRow = visitsSheet.getLastRow() + 1;
     
+    // Append the new visit
     visitsSheet.appendRow([
       data.addressID,
       data.visitDate,
@@ -102,13 +127,20 @@ function doPostUpdateVisits(data) {
       data.inactiveFlag ? 'Yes' : 'No'
     ]);
     
-    return createOutput('success', nextRow);
+    // SpreadsheetApp.flush(); // Apply the changes to the spreadsheet if needed
+    
+    Logger.log('doPostUpdateVisits: Row appended to Visits sheet'); // Confirm row append
+    
+    return createOutput('success', 'Visit updated successfully.');
   } catch (error) {
+    Logger.log('doPostUpdateVisits: Error - ' + error.toString()); // Log any errors
     return createOutput('error', error.toString());
   } finally {
     lock.releaseLock();
   }
 }
+
+
 
 function createOutput(result, data) {
   var output = {
@@ -119,7 +151,6 @@ function createOutput(result, data) {
   return ContentService.createTextOutput(JSON.stringify(output))
     .setMimeType(ContentService.MimeType.JSON);
 }
-
 
 
 
