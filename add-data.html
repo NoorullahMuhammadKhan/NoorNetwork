@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Visits - NoorNetwork Community Database</title>
+    <title>Add Data - NoorNetwork Community Database</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Include any additional CSS or JS here -->
 </head>
 <body>
     <header>
@@ -13,46 +12,81 @@
         <nav>
             <ul>
                 <li><a href="add-data.html">Add Data</a></li>
-                <li><a href="view-map.html">View Map</a></li>
-                <li><a href="update-visits.html" class="active">Update Visits</a></li>
+                <li><a href="maps-view.html">View on Map</a></li>
+                <li><a href="update-visits.html">Update Visits</a></li> <!-- Link to your update visits page -->
             </ul>
         </nav>
     </header>
+
     
     <main>
-        <section id="updateVisitSection">
-            <h2>Update Visit Details</h2>
-            <form id="updateVisitForm">
-                <!-- Form fields -->
-            </form>
+        <section id="addMember">
+            <h2>Add a New Member</h2>
+            <form id="addressForm">
+                <label for="streetAddress">Street Address:</label>
+                <input type="text" id="streetAddress" name="streetAddress" placeholder = "e.g. 15 Fourth Ave" required>
+                
+                <label for="suburb">Suburb/City:</label>
+                <input type="text" id="suburb" name="suburb" placeholder = "e.g. Blacktown" required>
 
-            <!-- Button to trigger the latest visit and notes update -->
-            <button id="updateVisitsButton">Update Latest Visits and Notes</button>
+                <label for="state">State/Territory:</label>
+                <select id="state" name="state" required>
+                    <option value="" disabled selected>-SELECT-</option>
+                    <option value="ACT">ACT</option>
+                    <option value="NSW">NSW</option>
+                    <option value="NT">NT</option>
+                    <option value="QLD">QLD</option>
+                    <option value="SA">SA</option>
+                    <option value="VIC">VIC</option>
+                    <option value="TAS">TAS</option>
+                    <option value="WA">WA</option>
+                </select>
+                </select>
+                
+                <label for="postcode">Postcode:</label>
+                <input type="text" id="postcode" name="postcode" placeholder = "e.g. 2148" required>
+                
+                <label for="country">Country:</label>
+                <select id="country" name="country" required>
+                    <option value="Australia">Australia</option>
+                </select>
+                </select>
+
+
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Full Name" required>
+                
+                <label for="background">Background:</label>
+                <input type="text" id="background" name="background" placeholder="CountryOfEthnicity" required>
+                
+                <label for="language">Language Spoken Other Than English:</label>
+                <select id="language" name="language" required>
+                    <option value="none">None</option>
+                    <option value="urdu">Urdu/Hindi</option>
+                    <option value="arabic">Arabic</option>
+                    <option value="indonesian">Indonesian/Malay</option>
+                    <option value="tamil">Tamil</option>
+                    <option value="bengali">Bengali</option>
+                    <option value="farsi">Farsi</option>
+                    <option value="pashto">Pashto</option>
+                    <option value="turkish">Turkish</option>
+                    <option value="somali">Somali</option>
+                    <option value="french">French</option>
+                    <option value="hausa">Hausa</option>
+                    <option value="swahili">Swahili</option>
+                    <option value="other">Other</option>
+                </select>
+                </select>
+
+                <button type="submit">Submit</button>
+            </form>
         </section>
     </main>
     
     <footer>
-        <!-- Footer content here -->
+        <p>&copy; 2024 ANY Enterprises. Developed by Noorullah Khan. All rights reserved. Testing Update (working (error)).</p>
     </footer>
     
     <script src="script.js"></script>
-
-    <script>
-        document.getElementById('updateVisitsButton').addEventListener('click', function() {
-            fetch('https://script.google.com/macros/s/AKfycbzQa6_UA0J5rq3QreZ4rdcw26BsLIxEyIGV0i5RCtQgYuQaWsmh5JRBFKlA6CM3h8Ft/exec', {
-                method: 'GET',
-            })
-            .then(response => response.text()) // Get the text response from GAS
-            .then(message => {
-                console.log(message);
-                alert('Visits updated: ' + message); // Show an alert with the response
-                // You might want to give visual feedback or reload the map here.
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error updating visits: ' + error.message);
-            });
-        });
-    </script>
 </body>
 </html>
