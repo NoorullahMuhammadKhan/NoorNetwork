@@ -51,14 +51,64 @@ function updateLatestVisitAndNotes() {
   SpreadsheetApp.flush(); // Apply all pending changes to the spreadsheet
 }
 
-// This function will handle GET requests
+
+function geocodeAddresses() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Main');
+  var dataRange = sheet.getDataRange();
+  var data = dataRange.getValues();
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var address = row[1] + ' ' + row[2] + ' ' + row[3] + ' ' + row[4]; // Construct the full address from columns B-F
+    var geocodeResponse = Maps.newGeocoder().geocode(address);
+    
+    if (geocodeResponse.status == 'OK') {
+      var results = geocodeResponse.results;
+      var lat = results[0].geometry.location.lat;
+      var lng = results[0].geometry.location.lng;
+      
+      sheet.getRange(i + 1, 12).setValue(lat); // Set latitude in column L
+      sheet.getRange(i + 1, 13).setValue(lng); // Set longitude in column M
+    } else {
+      Logger.log('Geocode failed for address: ' + address);
+    }
+  }
+}
+
+
 function doGet(e) {
-  // Call your function to update the latest visit and notes
+  // First, we update the latest visits and notes
   updateLatestVisitAndNotes();
   
-  // Return a success message
-  return ContentService.createTextOutput('Latest visits and notes updated.');
+  // Then we collect all necessary data for the map markers
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Main');
+  var dataRange = sheet.getDataRange();
+  var data = dataRange.getValues();
+  var outputData = [];
+
+  for (var i = 1; i < data.length; i++) { // Skip the header row
+    var row = data[i];
+    var record = {
+      addressID: row[0],
+      name: row[6], // Assuming name is in column G
+      latitude: row[11], // Assuming latitude is stored in the new column L
+      longitude: row[12], // Assuming longitude is stored in the new column M
+      lastVisited: row[9], // LastVisited in column J
+      latestNotes: row[10] // LatestNotes in column K
+    };
+    outputData.push(record);
+  }
+
+  // Apply all pending changes to the spreadsheet before returning data
+  SpreadsheetApp.flush();
+
+  // Return a JSON response containing the map markers data
+  return ContentService.createTextOutput(JSON.stringify(outputData))
+    .setMimeType(ContentService.MimeType.JSON);
 }
+
 
 // This function will handle POST requests
 function doPost(e) {
@@ -140,8 +190,6 @@ function doPostUpdateVisits(data) {
   }
 }
 
-
-
 function createOutput(result, data) {
   var output = {
     'result': result,
@@ -151,6 +199,3 @@ function createOutput(result, data) {
   return ContentService.createTextOutput(JSON.stringify(output))
     .setMimeType(ContentService.MimeType.JSON);
 }
-
-
-
