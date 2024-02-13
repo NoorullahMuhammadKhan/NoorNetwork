@@ -69,7 +69,7 @@
                     title: item.name
                 });
 
-                var contentString = '<div id="content">'+
+                var contentString = '<div id="content">' +
                     '<p><b>Address ID:</b> ' + item.addressID + '</p>' +
                     '<p><b>Name:</b> ' + item.name + '</p>' +
                     '<p><b>Address:</b> ' + item.address + '</p>' +
@@ -77,7 +77,8 @@
                     '<p><b>Language:</b> ' + item.language + '</p>' +
                     '<p><b>Last Visited:</b> ' + item.lastVisited + '</p>' +
                     '<p><b>Latest Notes:</b> ' + item.latestNotes + '</p>' +
-                    '<p><a href="' + item.addVisitLink + '">Add Visit</a></p>' +
+                    // Update this line to use a relative path to your HTML file
+                    '<p><a href="add-visits.html?addressID=' + item.addressID + '" target="_blank">Add Visit</a></p>';
                     '</div>';
 
                 var infowindow = new google.maps.InfoWindow({

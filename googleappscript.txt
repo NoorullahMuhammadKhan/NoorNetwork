@@ -264,3 +264,4 @@ function createOutput(status, message) {
     'message': message
   })).setMimeType(ContentService.MimeType.JSON);
 }
+

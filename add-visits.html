@@ -47,4 +47,21 @@
     
     <script src="script.js"></script>
 </body>
+<script>
+    window.onload = function() {
+        // Parse the URL query string
+        var queryParams = new URLSearchParams(window.location.search);
+        // Get the AddressID from the URL
+        var addressID = queryParams.get('addressID');
+        // Find the AddressID input field in your form
+        var addressIDField = document.getElementById('addressID'); // ID should match your input field's ID
+        // Set the value of the input field
+        if(addressIDField && addressID) {
+            addressIDField.value = addressID;
+        }
+    };
+</script>
+
+    
+
 </html>
