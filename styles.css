@@ -1,62 +1,58 @@
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 0 5%;
     background-color: #f4f4f4;
 }
 
 header {
-    background-color: #eeeeee; /* Light grey background for the header */
-    border-bottom: 3px solid #ff0000; /* Red bottom border */
+    background-color: #333;
     padding: 10px 0;
+    color: #fff;
 }
 
-h1 {
-    color: #ff0000; /* Red color for main logo */
+header h1 {
+    color: #D32F2F;
     text-align: center;
-}
-
-h2 {
-    color: #9a55d3; /* Lilac purple color for headings */
+    margin: 0;
 }
 
 nav ul {
     list-style-type: none;
     padding: 0;
     text-align: center;
-    margin: 0;
-    background-color: #ffffff; /* White background for the navbar */
 }
 
 nav ul li {
     display: inline;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #333;
-    padding: 10px 20px; /* Padding for each nav item */
-    border-radius: 4px; /* Rounded corners for nav items */
+    color: #fff;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease;
 }
 
-nav ul li a:hover, nav ul li a.active {
-    background-color: #ff0000; /* Red background for hover and active state */
-    color: #ffffff; /* White text when active/hover */
+nav ul li a.active,
+nav ul li a:hover {
+    background-color: #D32F2F;
+    color: #fff;
+    border-radius: 4px;
 }
 
 main {
-    margin: 20px 5%; /* 5% margin for main content */
+    margin: 20px 0;
 }
 
 footer {
     text-align: center;
     padding: 20px 0;
-    background-color: #eeeeee; /* Light grey background for the footer */
-    border-top: 3px solid #ff0000; /* Red top border */
+    border-top: 3px solid #D32F2F;
 }
 
-/* Form styling */
+/* Form element styles */
 form {
     max-width: 400px;
     margin: 20px auto;
@@ -66,26 +62,28 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px; /* Adjust the space between form elements */
 }
 
 input[type="text"],
 input[type="date"],
 textarea,
 select {
-    width: 100%;
+    width: 100%; /* Full width */
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Space below inputs */
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+    height: 40px; /* Set a fixed height for inputs and select */
 }
 
 textarea {
-    height: 100px;
+    height: 100px; /* Set a fixed height for the textarea */
 }
 
 button {
+    width: 100%;
     padding: 10px;
     background-color: #5C6BC0;
     color: white;
@@ -93,14 +91,25 @@ button {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    height: 40px;
+    height: 40px; /* Set a fixed height for buttons */
+    margin-top: 10px; /* Space above the button */
 }
 
 button:hover {
-    background-color: #ff0000; /* Red background on hover for buttons */
+    background-color: #3F51B5;
 }
 
 /* Additional styles for aesthetics */
+ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+li {
+    display: inline;
+    margin-right: 10px;
+}
+
 a {
     text-decoration: none;
     color: #5C6BC0;
@@ -110,28 +119,33 @@ a:hover {
     text-decoration: underline;
 }
 
+h2 {
+    color: #7E57C2;
+}
+
 /* Responsive adjustments for mobile devices */
 @media (max-width: 600px) {
     body {
-        padding: 0 5%;
+        padding: 0 5%; /* Smaller side padding for mobile devices */
     }
 
     form {
-        width: 90%;
-        margin: 10px auto;
-        padding: 15px;
-        gap: 15px;
+        width: 90%; /* Allows the form to be more responsive on mobile */
+        margin: 10px auto; /* Less vertical space on mobile */
+        padding: 15px; /* Smaller padding on mobile */
+        gap: 15px; /* Smaller gaps for a tighter layout on mobile */
     }
 
+    /* Ensuring inputs and buttons stretch appropriately */
     input[type="text"],
     input[type="date"],
     textarea,
     select,
     button {
-        width: 100%;
+        width: 100%; /* Full width for mobile */
     }
 
-    header, nav ul, main, footer {
-        padding: 0;
+    nav ul li a {
+        padding: 5px; /* Smaller padding on mobile */
     }
 }
