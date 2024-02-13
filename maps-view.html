@@ -53,12 +53,13 @@
     <script>
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 8,
-                center: { lat: -33.8688, lng: 151.2093 } // Example coordinates
+                zoom: 12,
+                center: { lat: -33.76430484969197, lng: 150.91145980583616 } // Example coordinates
             });
 
+
             // Fetch data to add markers
-            fetch('https://script.google.com/macros/s/AKfycbylG4xsd_F0Ir1_7gA5GAwLdscmCXoS56xi7_IwwK2fkKKaJ2wVDBSI70vNkCEYS4I2/exec')
+            fetch('https://script.google.com/macros/s/AKfycbwQBtHUE5tIHmuQy8X-uH7NZ5xIL5o9CAUpDReZ7spmNvowJmfJ-G3u2Z2ufIEpggM/exec')
             .then(response => response.json())
             .then(data => {
                 data.forEach(item => {
@@ -91,8 +92,9 @@
             .catch(error => console.error('Error:', error));
         }
         // Add this part after your initMap function or at the bottom of the script tag
+        // Add this part after your initMap function or at the bottom of the script tag
         document.getElementById('updateVisitsButton').addEventListener('click', function() {
-            fetch('https://script.google.com/macros/s/AKfycbylG4xsd_F0Ir1_7gA5GAwLdscmCXoS56xi7_IwwK2fkKKaJ2wVDBSI70vNkCEYS4I2/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbwQBtHUE5tIHmuQy8X-uH7NZ5xIL5o9CAUpDReZ7spmNvowJmfJ-G3u2Z2ufIEpggM/exec', {
                 method: 'GET' // or 'POST' if your Google Script expects a POST request
             })
             .then(response => response.json()) // or .text() if your response is plain text

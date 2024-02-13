@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
       language: document.getElementById('language').value
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbylG4xsd_F0Ir1_7gA5GAwLdscmCXoS56xi7_IwwK2fkKKaJ2wVDBSI70vNkCEYS4I2/exec', { // Replace with your actual script ID
+    fetch('https://script.google.com/macros/s/AKfycbwQBtHUE5tIHmuQy8X-uH7NZ5xIL5o9CAUpDReZ7spmNvowJmfJ-G3u2Z2ufIEpggM/exec', { // Replace with your actual script ID
       method: 'POST',
       mode: 'no-cors', // no-cors means we can't read the response from the server
       headers: {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Check if the response type is 'opaque', which occurs with 'no-cors'
       if (response.type === 'opaque' || response.ok) {
         // If 'opaque' or response is OK, assume success
-        alert('Data submitted successfully');
+        alert('Data submitted & geocoded successfully');
         form.reset(); // Reset the form on assumed success
       } else {
         // If the response is not 'opaque' and is not OK, throw an error
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
       inactiveFlag: document.getElementById('inactiveFlag').checked // true or false
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbylG4xsd_F0Ir1_7gA5GAwLdscmCXoS56xi7_IwwK2fkKKaJ2wVDBSI70vNkCEYS4I2/exec', { // Replace with your actual script ID
+    fetch('https://script.google.com/macros/s/AKfycbwQBtHUE5tIHmuQy8X-uH7NZ5xIL5o9CAUpDReZ7spmNvowJmfJ-G3u2Z2ufIEpggM/exec', { // Replace with your actual script ID
       method: 'POST',
       mode: 'no-cors', // no-cors means we won't be able to read the response
       headers: {
