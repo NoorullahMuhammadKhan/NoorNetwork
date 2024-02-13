@@ -78,35 +78,35 @@ function geocodeAddresses() {
 
 
 function doGet(e) {
-  // First, we update the latest visits and notes
   updateLatestVisitAndNotes();
   
-  // Then we collect all necessary data for the map markers
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Main');
   var dataRange = sheet.getDataRange();
   var data = dataRange.getValues();
   var outputData = [];
 
-  for (var i = 1; i < data.length; i++) { // Skip the header row
+  for (var i = 1; i < data.length; i++) {
     var row = data[i];
+    var formattedDate = Utilities.formatDate(new Date(row[9]), Session.getScriptTimeZone(), "dd/MM/yy");
+    var concatenatedAddress = row[1] + ', ' + row[2] + ', ' + row[3] + ', ' + row[4];
     var record = {
       addressID: row[0],
-      name: row[6], // Assuming name is in column G
-      latitude: row[11], // Assuming latitude is stored in the new column L
-      longitude: row[12], // Assuming longitude is stored in the new column M
-      lastVisited: row[9], // LastVisited in column J
-      latestNotes: row[10] // LatestNotes in column K
+      name: row[6],
+      address: concatenatedAddress,
+      country: row[5],
+      language: row[7],
+      lastVisited: formattedDate,
+      latestNotes: row[10],
+      latitude: row[11],
+      longitude: row[12],
+      addVisitLink: 'add-visits.html?addressID=' + encodeURIComponent(row[0])
     };
     outputData.push(record);
   }
 
-  // Apply all pending changes to the spreadsheet before returning data
   SpreadsheetApp.flush();
-
-  // Return a JSON response containing the map markers data
-  return ContentService.createTextOutput(JSON.stringify(outputData))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(outputData)).setMimeType(ContentService.MimeType.JSON);
 }
 
 
@@ -199,12 +199,5 @@ function createOutput(result, data) {
   return ContentService.createTextOutput(JSON.stringify(output))
     .setMimeType(ContentService.MimeType.JSON);
 }
-
-
-
-
-
-
-
 
 

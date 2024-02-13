@@ -26,12 +26,20 @@
         <label for="languageFilter">Filter by Language Spoken:</label>
         <select id="languageFilter">
             <option value="all">All</option>
-            <!-- Add more options here -->
+            <option value="ACT">ACT</option>
+            <option value="NSW">NSW</option>
+            <option value="NT">NT</option>
+            <option value="QLD">QLD</option>
+            <option value="SA">SA</option>
+            <option value="VIC">VIC</option>
+            <option value="TAS">TAS</option>
+            <option value="WA">WA</option>
+        </select>
         </select>
         
         <!-- "Update Visits" button -->
         <button id="updateVisitsButton">Update Visits</button>
-        
+               
         <!-- Additional filter elements can be added here -->
     </main>
     
@@ -82,6 +90,23 @@
             })
             .catch(error => console.error('Error:', error));
         }
+        // Add this part after your initMap function or at the bottom of the script tag
+        document.getElementById('updateVisitsButton').addEventListener('click', function() {
+            fetch('https://script.google.com/macros/s/AKfycbylG4xsd_F0Ir1_7gA5GAwLdscmCXoS56xi7_IwwK2fkKKaJ2wVDBSI70vNkCEYS4I2/exec', {
+                method: 'GET' // or 'POST' if your Google Script expects a POST request
+            })
+            .then(response => response.json()) // or .text() if your response is plain text
+            .then(data => {
+                console.log('Update Visits:', data);
+                alert('Visits updated successfully.');
+                // Reload map to reflect new data
+                initMap();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating visits: ' + error.message);
+            });
+        });
 </script>
 </body>
 </html>
