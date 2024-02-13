@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
       language: document.getElementById('language').value
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbwQBtHUE5tIHmuQy8X-uH7NZ5xIL5o9CAUpDReZ7spmNvowJmfJ-G3u2Z2ufIEpggM/exec', { // Replace with your actual script ID
+    fetch('https://script.google.com/macros/s/AKfycbz9nJu_L5y5l9LziQRwFGRZqnoa9DXufmJPupHJ6BApXY96B7W5Aod8MW0Xr2Y42Z6z/exec', { // Replace with your actual script ID
       method: 'POST',
       mode: 'no-cors', // no-cors means we can't read the response from the server
       headers: {
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
       inactiveFlag: document.getElementById('inactiveFlag').checked // true or false
     };
 
-    fetch('https://script.google.com/macros/s/AKfycbwQBtHUE5tIHmuQy8X-uH7NZ5xIL5o9CAUpDReZ7spmNvowJmfJ-G3u2Z2ufIEpggM/exec', { // Replace with your actual script ID
+    fetch('https://script.google.com/macros/s/AKfycbz9nJu_L5y5l9LziQRwFGRZqnoa9DXufmJPupHJ6BApXY96B7W5Aod8MW0Xr2Y42Z6z/exec', { // Replace with your actual script ID
       method: 'POST',
       mode: 'no-cors', // no-cors means we won't be able to read the response
       headers: {

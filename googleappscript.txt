@@ -10,6 +10,28 @@ function incrementAddressID() {
   }
 }
 
+/*
+function concatenateAddress() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Main');
+  var dataRange = sheet.getDataRange();
+  var data = dataRange.getValues();
+
+  // Start from the first data row, assuming the first row is headers
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    // Concatenate the address components with a comma and space
+    var fullAddress = row[1] + ', ' + row[2] + ', ' + row[3] + ', ' + row[4];
+    // Write the concatenated address back to the sheet, column N
+    sheet.getRange(i + 1, 14).setValue(fullAddress);
+  }
+
+  // Optionally, you can call SpreadsheetApp.flush() to apply changes if you're not seeing them immediately.
+  // SpreadsheetApp.flush();
+}
+*/
+
+
 function updateLatestVisitAndNotes() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var mainSheet = ss.getSheetByName('Main');
@@ -145,32 +167,32 @@ function doPost(e) {
 function doPostAddMember(data) {
   var lock = LockService.getScriptLock();
   lock.waitLock(30000);
-
+  
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName('Main');
     var nextRow = sheet.getLastRow() + 1;
-
-    // Construct the full address from the provided data
-    var address = data.streetAddress + ' ' + data.suburb + ' ' + data.state + ' ' + data.postcode;
-    var geocodeResponse = Maps.newGeocoder().geocode(address);
-
-    // Initialize latitude and longitude variables
+    
+    // Construct the concatenated address
+    var concatenatedAddress = data.streetAddress + ', ' + data.suburb + ', ' + data.state + ', ' + data.postcode;
+    
+    // Geocode the address
+    var geocodeResponse = Maps.newGeocoder().geocode(concatenatedAddress);
     var lat, lng;
-
-    if (geocodeResponse.status == 'OK') {
+    if (geocodeResponse.status === 'OK') {
       var results = geocodeResponse.results;
       lat = results[0].geometry.location.lat;
       lng = results[0].geometry.location.lng;
     } else {
-      Logger.log('Geocode failed for address: ' + address);
-      lat = ''; // Or some default value
-      lng = ''; // Or some default value
+      Logger.log('Geocode failed for address: ' + concatenatedAddress);
+      // Set default values or handle the error as needed
+      lat = '';
+      lng = '';
     }
-
-    // Append the row with the geocoded data
+    
+    // Append the new member and address data to the sheet
     sheet.appendRow([
-      nextRow,
+      nextRow, // AddressID
       data.streetAddress,
       data.suburb,
       data.state,
@@ -179,19 +201,34 @@ function doPostAddMember(data) {
       data.name,
       data.background,
       data.language,
-      '', // Presuming this is where LastVisited would go
-      '', // Presuming this is where LatestNotes would go
-      lat,
-      lng
+      '', // Placeholder for LastVisited
+      '', // Placeholder for LatestNotes
+      lat, // Latitude
+      lng, // Longitude
+      concatenatedAddress // Concatenated Address
     ]);
-
-    return createOutput('success', 'Member added and geocoded successfully.');
+    
+    // Apply all pending changes
+    SpreadsheetApp.flush();
+    
+    return createOutput('success', 'Member added and address geocoded successfully.');
   } catch (error) {
+    // Log and return the error information
+    Logger.log('Error in doPostAddMember: ' + error);
     return createOutput('error', error.toString());
   } finally {
+    // Release the lock
     lock.releaseLock();
   }
 }
+
+function createOutput(status, message) {
+  return ContentService.createTextOutput(JSON.stringify({ 'status': status, 'message': message }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+
 
 function doPostUpdateVisits(data) {
   var lock = LockService.getScriptLock();
