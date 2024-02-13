@@ -56,7 +56,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5qd8zAVGpp_wwAfLnpfjQA5VdlOqjJc4&callback=initMap" async defer></script>
     
     <script>
-        function initMap() {
+function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
                 center: { lat: -33.76430484969197, lng: 150.91145980583616 } // Example coordinates
@@ -82,6 +82,7 @@
                     '<p><b>Language:</b> ' + item.language + '</p>' +
                     '<p><b>Last Visited:</b> ' + item.lastVisited + '</p>' +
                     '<p><b>Latest Notes:</b> ' + item.latestNotes + '</p>' +
+                    // '<p><b>Active:</b> ' + item.active + '</p>' +
                     // Update this line to use a relative path to your HTML file
                     '<p><a href="add-visits.html?addressID=' + item.addressID + '" target="_blank">Add Visit</a></p>';
                     '</div>';
@@ -97,6 +98,8 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
+
         // Add this part after your initMap function or at the bottom of the script tag
         // Add this part after your initMap function or at the bottom of the script tag
         document.getElementById('updateVisitsButton').addEventListener('click', function() {

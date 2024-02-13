@@ -37,10 +37,10 @@ function updateLatestVisitAndNotes() {
   var mainSheet = ss.getSheetByName('Main');
   var visitsSheet = ss.getSheetByName('Visits');
 
-  var mainData = mainSheet.getRange(2, 1, mainSheet.getLastRow() - 1, 2).getValues(); // Assuming the AddressID is in column A
-  var visitData = visitsSheet.getRange(2, 1, visitsSheet.getLastRow() - 1, 4).getValues(); // Assuming AddressID, VisitDate, VisitNotes, InactiveFlag are in columns A, B, C, D respectively
+  var mainData = mainSheet.getRange(2, 1, mainSheet.getLastRow() - 1, mainSheet.getLastColumn()).getValues();
+  var visitData = visitsSheet.getRange(2, 1, visitsSheet.getLastRow() - 1, visitsSheet.getLastColumn()).getValues();
 
-  // Create a map to track the latest visit date and notes for each AddressID
+  // Create a map to track the latest visit date, notes, and inactive flag for each AddressID
   var latestVisitsMap = new Map();
 
   // Loop over each row in the visits data
@@ -48,8 +48,8 @@ function updateLatestVisitAndNotes() {
     var addressID = row[0];
     var visitDate = new Date(row[1]);
     var visitNotes = row[2];
-    var inactiveFlag = row[3];
-    
+    var inactiveFlag = row[3] ? 'yes' : 'no'; // Assuming the InactiveFlag is 'yes' or 'no' in column D
+
     // If this is the first visit for this AddressID or if the visit date is later than the one we have, update the map
     if (!latestVisitsMap.has(addressID) || visitDate > latestVisitsMap.get(addressID).visitDate) {
       latestVisitsMap.set(addressID, {visitDate: visitDate, visitNotes: visitNotes, inactiveFlag: inactiveFlag});
@@ -63,15 +63,16 @@ function updateLatestVisitAndNotes() {
 
     // If we have a latest visit for this AddressID, update the main sheet
     if (latestVisit) {
-      // Update the last visited date and notes in the Main sheet
       mainSheet.getRange(index + 2, 10).setValue(latestVisit.visitDate); // Assuming LastVisited is column J
       mainSheet.getRange(index + 2, 11).setValue(latestVisit.visitNotes); // Assuming LatestNotes is column K
+      mainSheet.getRange(index + 2, 15).setValue(latestVisit.inactiveFlag); // Assuming InactiveFlag is column O
     }
   });
 
-  // After all changes are made to the spreadsheet and before the function exits:
-  SpreadsheetApp.flush(); // Apply all pending changes to the spreadsheet
+  // Apply all pending changes to the spreadsheet
+  SpreadsheetApp.flush();
 }
+
 
 /*
 function geocodeAddresses() {
@@ -122,6 +123,7 @@ function doGet(e) {
       latestNotes: row[10],
       latitude: row[11],
       longitude: row[12],
+      active: row[14],
       addVisitLink: 'add-visits.html?addressID=' + encodeURIComponent(row[0])
     };
     outputData.push(record);
