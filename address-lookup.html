@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Lookup - NoorNetwork</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>NoorNetwork Address Lookup</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Main</a></li>
+                <li><a href="add-data.html">Add Data</a></li>
+                <li><a href="maps-view.html">View Map</a></li>
+                <li><a href="add-visits.html">Add Visit</a></li>
+                <li><a href="address-lookup.html">Search Address</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="searchSection">
+            <h2>Search Addresses</h2>
+            <form id="searchForm">
+                <label for="searchName">Name:</label>
+                <input type="text" id="searchName" name="searchName" placeholder="Enter name to search">
+                
+                <label for="searchLanguage">Language:</label>
+                <input type="text" id="searchLanguage" name="searchLanguage" placeholder="Enter language to search">
+                
+                <button type="button" id="searchButton">Search</button>
+            </form>
+        </section>
+        
+        <section id="resultsSection">
+            <h2>Search Results</h2>
+            <table id="resultsTable">
+                <!-- Results will be inserted here -->
+            </table>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2024 NoorNetwork. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

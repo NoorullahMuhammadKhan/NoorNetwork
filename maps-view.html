@@ -14,7 +14,8 @@
                 <li><a href="index.html">Main</a></li>
                 <li><a href="add-data.html">Add Data</a></li>
                 <li><a href="maps-view.html">View Map</a></li>
-                <li><a href="add-visits.html" class="active">Add Visit</a></li>
+                <li><a href="add-visits.html">Add Visit</a></li>
+                <li><a href="address-lookup.html">Search Address</a></li>
             </ul>
         </nav>
     </header>
@@ -22,7 +23,7 @@
     <main>
         <h2>Community Map</h2>
         <div id="map" style="height: 400px;"></div> <!-- The map will be inserted here -->
-        
+        <!--
         <label for="languageFilter">Filter by Language Spoken:</label>
         <select id="languageFilter">
             <option value="all">All</option>
@@ -41,11 +42,14 @@
             <option value="other">Other</option>
         </select>
         </select>
+        -->
         
         <!-- "Update Visits" button -->
         <button id="updateVisitsButton">Refresh Visits</button>
                
-        <!-- Additional filter elements can be added here -->
+        <!-- Current Location button -->
+        <button id="currentLocationButton">Use My Location</button>
+
     </main>
     
     <footer>
@@ -56,6 +60,8 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5qd8zAVGpp_wwAfLnpfjQA5VdlOqjJc4&callback=initMap" async defer></script>
     
     <script>
+
+
 function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
