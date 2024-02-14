@@ -64,7 +64,7 @@
 
 function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 12,
+                zoom: 10,
                 center: { lat: -33.76430484969197, lng: 150.91145980583616 } // Example coordinates
             });
 
@@ -124,6 +124,28 @@ function initMap() {
                 alert('Error updating visits: ' + error.message);
             });
         });
+
+    document.getElementById('currentLocationButton').addEventListener('click', function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var currentLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            map.setCenter(currentLocation);
+            // Optionally, you can also add a marker at the user's location
+            new google.maps.Marker({
+                position: currentLocation,
+                map: map,
+                title: "You are here"
+            });
+        }, function() {
+            alert('Geolocation is not supported by this browser or permissions were denied.');
+        });
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+    });
 </script>
 </body>
 </html>
