@@ -28,8 +28,25 @@
                 <input type="text" id="searchName" name="searchName" placeholder="Enter name to search">
                 
                 <label for="searchLanguage">Language:</label>
-                <input type="text" id="searchLanguage" name="searchLanguage" placeholder="Enter language to search">
-                
+                <select id="languageFilter">
+                    <option value="all">All</option>
+                    <option value="urdu">Urdu/Hindi</option>
+                    <option value="arabic">Arabic</option>
+                    <option value="indonesian">Indonesian/Malay</option>
+                    <option value="tamil">Tamil</option>
+                    <option value="bengali">Bengali</option>
+                    <option value="farsi">Farsi</option>
+                    <option value="pashto">Pashto</option>
+                    <option value="turkish">Turkish</option>
+                    <option value="somali">Somali</option>
+                    <option value="french">French</option>
+                    <option value="hausa">Hausa</option>
+                    <option value="swahili">Swahili</option>
+                    <option value="other">Other</option>
+                </select>
+                </select>
+
+
                 <button type="button" id="searchButton">Search</button>
             </form>
         </section>
@@ -47,5 +64,53 @@
     </footer>
     
     <script src="script.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Attach a click event listener to the search button
+        document.getElementById('searchButton').addEventListener('click', function() {
+            var name = document.getElementById('searchName').value.trim();
+            var language = document.getElementById('searchLanguage').value.trim();
+            
+            // Construct the URL for the Google Apps Script Web App.
+            var url = 'https://script.google.com/macros/s/AKfycbwNyacXCHaJA8VMC8IwCr2Gy-KCQ-qQMzZw76bfhMUHqrQfjEDEju_V9v1I3htNsOBE/exec';
+            
+            // Add query parameters for search criteria
+            if(name) url += '?name=' + encodeURIComponent(name);
+            if(language) url += (url.includes('?') ? '&' : '?') + 'language=' + encodeURIComponent(language);
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Clear any previous results
+                var resultsTable = document.getElementById('resultsTable');
+                resultsTable.innerHTML = '';
+                
+                // Create the header row
+                var headerRow = '<tr><th>Address ID</th><th>Address</th><th>Background</th><th>Language</th><th>Last Visited</th><th>Latest Notes</th></tr>';
+                resultsTable.innerHTML += headerRow;
+                
+                // Populate the table with the search results
+                data.forEach(item => {
+                    var row = `<tr>
+                        <td>${item.addressID}</td>
+                        <td>${item.name}</td>
+                        <td>${item.address}</td>
+                        <td>${item.country}</td>
+                        <td>${item.language}</td>
+                        <td>${item.lastVisited}</td>
+                        <td>${item.latestNotes}</td>
+                    </tr>`;
+                    resultsTable.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching the search results.');
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

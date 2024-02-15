@@ -63,53 +63,57 @@
 
 
 function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 10,
-                center: { lat: -33.76430484969197, lng: 150.91145980583616 } // Example coordinates
-            });
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: { lat: -33.76430484969197, lng: 150.91145980583616 } // Center of the map
+    });
 
-
-            // Fetch data to add markers
-            fetch('https://script.google.com/macros/s/AKfycbz9nJu_L5y5l9LziQRwFGRZqnoa9DXufmJPupHJ6BApXY96B7W5Aod8MW0Xr2Y42Z6z/exec')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(item => {
-                    var marker = new google.maps.Marker({
+    // Fetch data to add markers
+    fetch('https://script.google.com/macros/s/AKfycbwNyacXCHaJA8VMC8IwCr2Gy-KCQ-qQMzZw76bfhMUHqrQfjEDEju_V9v1I3htNsOBE/exec')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                // Create a marker for each item
+                var marker = new google.maps.Marker({
                     position: { lat: item.latitude, lng: item.longitude },
                     map: map,
                     title: item.name
                 });
 
+                // Content for the info window
                 var contentString = '<div id="content">' +
                     '<p><b>Address ID:</b> ' + item.addressID + '</p>' +
                     '<p><b>Name:</b> ' + item.name + '</p>' +
                     '<p><b>Address:</b> ' + item.address + '</p>' +
-                    '<p><b>Country:</b> ' + item.country + '</p>' +
-                    '<p><b>Language:</b> ' + item.language + '</p>' +
+                    '<p><b>Background:</b> ' + item.background + '</p>' +
+                    '<p><b>Language Spoken:</b> ' + item.languageSpoken + '</p>' +
                     '<p><b>Last Visited:</b> ' + item.lastVisited + '</p>' +
                     '<p><b>Latest Notes:</b> ' + item.latestNotes + '</p>' +
-                    // '<p><b>Active:</b> ' + item.active + '</p>' +
-                    // Update this line to use a relative path to your HTML file
-                    '<p><a href="add-visits.html?addressID=' + item.addressID + '" target="_blank">Add Visit</a></p>';
+                    '<p><a href="add-visits.html?addressID=' + item.addressID + '" target="_blank">Add Visit</a></p>' +
                     '</div>';
 
+                // Create an info window
                 var infowindow = new google.maps.InfoWindow({
                     content: contentString
                 });
 
+                // Add a click listener to the marker to open the info window
                 marker.addListener('click', function() {
                     infowindow.open(map, marker);
                 });
             });
-            })
-            .catch(error => console.error('Error:', error));
-        }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Ensure the initMap function is called after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initMap);
 
 
         // Add this part after your initMap function or at the bottom of the script tag
         // Add this part after your initMap function or at the bottom of the script tag
         document.getElementById('updateVisitsButton').addEventListener('click', function() {
-            fetch('https://script.google.com/macros/s/AKfycbz9nJu_L5y5l9LziQRwFGRZqnoa9DXufmJPupHJ6BApXY96B7W5Aod8MW0Xr2Y42Z6z/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbwNyacXCHaJA8VMC8IwCr2Gy-KCQ-qQMzZw76bfhMUHqrQfjEDEju_V9v1I3htNsOBE/exec', {
                 method: 'GET' // or 'POST' if your Google Script expects a POST request
             })
             .then(response => response.json()) // or .text() if your response is plain text

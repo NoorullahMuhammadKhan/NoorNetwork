@@ -100,37 +100,46 @@ function geocodeAddresses() {
 }
 */
 
-function doGet(e) {
-  updateLatestVisitAndNotes();
-  
+
+function doGet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName('Main');
+  var sheet = ss.getSheetByName('Main'); // Make sure this is the name of your sheet
   var dataRange = sheet.getDataRange();
   var data = dataRange.getValues();
   var outputData = [];
 
-  for (var i = 1; i < data.length; i++) {
+  for (var i = 1; i < data.length; i++) { // Starts at 1 to skip the header row
     var row = data[i];
-    var formattedDate = Utilities.formatDate(new Date(row[9]), Session.getScriptTimeZone(), "dd/MM/yy");
-    var concatenatedAddress = row[1] + ', ' + row[2] + ', ' + row[3] + ', ' + row[4];
+    var formattedDate = row[9] ? Utilities.formatDate(new Date(row[9]), Session.getScriptTimeZone(), "dd/MM/yyyy") : '';
+    
+    // Construct the address from the relevant columns
+    var concatenatedAddress = row[1] + ', ' + row[2] + ', ' + row[3] + ', ' + row[4] + ', ' + row[5];
+    
+    // Prepare the record object
     var record = {
       addressID: row[0],
       name: row[6],
       address: concatenatedAddress,
-      country: row[5],
-      language: row[7],
+      background: row[7],
+      languageSpoken: row[8],
       lastVisited: formattedDate,
-      latestNotes: row[10],
-      latitude: row[11],
-      longitude: row[12],
-      active: row[14],
+      latestNotes: row[10] || '', // Use an empty string if there are no notes
+      latitude: parseFloat(row[11]),
+      longitude: parseFloat(row[12]),
+      active: row[14] === 'yes', // Convert to boolean
       addVisitLink: 'add-visits.html?addressID=' + encodeURIComponent(row[0])
     };
-    outputData.push(record);
+
+    // Only include active records
+    if (record.active) {
+      outputData.push(record);
+    }
   }
 
+  // Flush changes and return the output
   SpreadsheetApp.flush();
-  return ContentService.createTextOutput(JSON.stringify(outputData)).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(outputData))
+                       .setMimeType(ContentService.MimeType.JSON);
 }
 
 
@@ -266,4 +275,3 @@ function createOutput(status, message) {
     'message': message
   })).setMimeType(ContentService.MimeType.JSON);
 }
-
