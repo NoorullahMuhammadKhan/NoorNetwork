@@ -66,50 +66,45 @@
     <script src="script.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Attach a click event listener to the search button
-        document.getElementById('searchButton').addEventListener('click', function() {
-            var name = document.getElementById('searchName').value.trim();
-            var language = document.getElementById('searchLanguage').value.trim();
-            
-            // Construct the URL for the Google Apps Script Web App.
-            var url = 'https://script.google.com/macros/s/AKfycbwNyacXCHaJA8VMC8IwCr2Gy-KCQ-qQMzZw76bfhMUHqrQfjEDEju_V9v1I3htNsOBE/exec';
-            
-            // Add query parameters for search criteria
-            if(name) url += '?name=' + encodeURIComponent(name);
-            if(language) url += (url.includes('?') ? '&' : '?') + 'language=' + encodeURIComponent(language);
-            
-            fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                // Clear any previous results
-                var resultsTable = document.getElementById('resultsTable');
-                resultsTable.innerHTML = '';
-                
-                // Create the header row
-                var headerRow = '<tr><th>Address ID</th><th>Address</th><th>Background</th><th>Language</th><th>Last Visited</th><th>Latest Notes</th></tr>';
-                resultsTable.innerHTML += headerRow;
-                
-                // Populate the table with the search results
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('searchButton').addEventListener('click', function() {
+        var searchName = document.getElementById('searchName').value.trim().toLowerCase();
+        var searchLanguage = document.getElementById('languageFilter').value;
+        
+        fetch('https://script.google.com/macros/s/AKfycbwNyacXCHaJA8VMC8IwCr2Gy-KCQ-qQMzZw76bfhMUHqrQfjEDEju_V9v1I3htNsOBE/exec', {
+            method: 'POST',
+            contentType: 'application/json',
+            // Send the search parameters as a JSON payload
+            body: JSON.stringify({ name: searchName, language: searchLanguage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            var resultsTable = document.getElementById('resultsTable');
+            resultsTable.innerHTML = ''; // Clear previous results
+
+            if (data.length > 0) {
+                // Create and insert the results into the table
                 data.forEach(item => {
-                    var row = `<tr>
-                        <td>${item.addressID}</td>
-                        <td>${item.name}</td>
-                        <td>${item.address}</td>
-                        <td>${item.country}</td>
-                        <td>${item.language}</td>
-                        <td>${item.lastVisited}</td>
-                        <td>${item.latestNotes}</td>
-                    </tr>`;
-                    resultsTable.innerHTML += row;
+                    var row = resultsTable.insertRow(-1); // Insert a row at the end of the table
+                    row.insertCell(0).textContent = item.addressID;
+                    row.insertCell(1).textContent = item.name;
+                    row.insertCell(2).textContent = item.address;
+                    row.insertCell(3).textContent = item.background;
+                    row.insertCell(4).textContent = item.languageSpoken;
+                    row.insertCell(5).textContent = item.lastVisited;
+                    row.insertCell(6).textContent = item.latestNotes;
                 });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while fetching the search results.');
-            });
+            } else {
+                // Display 'No matching results' if no data is found
+                resultsTable.innerHTML = '<tr><td colspan="7">No matching results</td></tr>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error searching addresses.');
         });
     });
+});
 </script>
 
 </body>
